@@ -29,6 +29,10 @@ export default function HomePage() {
     }, [balance, expense]);
 
     useEffect(() => {
+        localStorage.setItem('expenses', JSON.stringify(transactions));
+    }, [transactions]);
+    
+    useEffect(() => {
         localStorage.setItem('transactions', JSON.stringify(transactions));
     }, [transactions]);
 
