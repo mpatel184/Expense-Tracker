@@ -65,6 +65,7 @@ const AddExpense = ({ onClose, onAdd }) => {
 
                     <div style={{ marginBottom: '15px' }}>
                         <input
+                        name="price"
                             type="number"
                             placeholder="Price"
                             value={amount}
@@ -106,6 +107,7 @@ const AddExpense = ({ onClose, onAdd }) => {
                         </select>
 
                         <input
+                        name="date"
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
