@@ -23,20 +23,32 @@ export default function HomePage() {
 
     const COLORS = ['#9C27B0', '#FF9800', '#FFEB3B'];
 
+
+    useEffect(() => {
+        const savedExpense = localStorage.getItem('expense');
+        const savedBalance = localStorage.getItem('balance');
+        const savedTransactions = localStorage.getItem('transactions');
+
+        if (savedExpense) setExpense(parseFloat(savedExpense));
+        if (savedBalance) setBalance(parseFloat(savedBalance));
+        if (savedTransactions) setTransactions(JSON.parse(savedTransactions));
+    }, []);
+
+
     useEffect(() => {
         localStorage.setItem('balance', balance);
         localStorage.setItem('expense', expense);
-    }, [balance, expense]);
-
-    useEffect(() => {
         localStorage.setItem('transactions', JSON.stringify(transactions));
-    }, [transactions]);
+    }, [balance, expense, transactions]);
 
     const handleAddIncome = (amount) => {
         const newBalance = balance + amount;
         setBalance(newBalance);
-        setTransactions(prevTransactions => [...prevTransactions, { id: Date.now(), type: "Income", amount }]);
-        setShowAddIncome(false);
+        setTransactions(prev => {
+            const updated = [...prev, { id: Date.now(), type: "Income", amount }];
+            localStorage.setItem('transactions', JSON.stringify(updated));
+            return updated;
+        });
     };
 
     const handleAddExpense = (amount, category, title = '', date = '') => {
@@ -44,62 +56,31 @@ export default function HomePage() {
             alert("Insufficient balance!");
             return;
         }
-        const newBalance = balance - amount;
-        const newExpense = expense + amount;
-        setBalance(newBalance);
-        setExpense(newExpense);
-        setTransactions(prevTransactions => [
-            ...prevTransactions, 
-            { 
-                id: Date.now(), 
-                type: "Expense", 
-                amount, 
-                category, 
-                title: title || category, 
-                date: date || new Date().toISOString().split('T')[0]
-            }
-        ]);
-        setShowAddExpense(false);
+
+        setBalance(prev => prev - amount);
+        setExpense(prev => prev + amount);
+
+        setTransactions(prev => {
+            const updated = [...prev, { id: Date.now(), type: "Expense", amount, category, title: title || category, date: date || new Date().toISOString().split('T')[0] }];
+            localStorage.setItem('transactions', JSON.stringify(updated));
+            return updated;
+        });
     };
 
     const handleDeleteTransaction = (id) => {
-        const transaction = transactions.find(t => t.id === id);
-        if (transaction.type === "Income") {
-            setBalance(prevBalance => prevBalance - transaction.amount);
-        } else {
-            setBalance(prevBalance => prevBalance + transaction.amount);
-            setExpense(prevExpense => prevExpense - transaction.amount);
-        }
-        setTransactions(prevTransactions => prevTransactions.filter(t => t.id !== id));
+        setTransactions(prev => {
+            const updated = prev.filter(t => t.id !== id);
+            localStorage.setItem('transactions', JSON.stringify(updated));
+            return updated;
+        });
     };
 
     const handleEditTransaction = (id, newAmount, newCategory, newTitle, newDate) => {
-        const transaction = transactions.find(t => t.id === id);
-        const difference = newAmount - transaction.amount;
-
-        if (transaction.type === "Income") {
-            setBalance(prevBalance => prevBalance + difference);
-        } else {
-            if (difference > balance) {
-                alert("Insufficient balance!");
-                return;
-            }
-            setBalance(prevBalance => prevBalance - difference);
-            setExpense(prevExpense => prevExpense + difference);
-        }
-
-        setTransactions(prevTransactions =>
-            prevTransactions.map(t =>
-                t.id === id ? { 
-                    ...t, 
-                    amount: newAmount, 
-                    category: newCategory,
-                    title: newTitle || newCategory,
-                    date: newDate || t.date
-                } : t
-            )
-        );
-        setEditingTransaction(null);
+        setTransactions(prev => {
+            const updated = prev.map(t => t.id === id ? { ...t, amount: newAmount, category: newCategory, title: newTitle || newCategory, date: newDate || t.date } : t);
+            localStorage.setItem('transactions', JSON.stringify(updated));
+            return updated;
+        });
     };
 
     const pieData = [
