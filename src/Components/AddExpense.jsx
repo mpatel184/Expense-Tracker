@@ -48,6 +48,7 @@ const AddExpense = ({ onClose, onAdd }) => {
                     <div style={{ marginBottom: '15px' }}>
                         <input
                             type="text"
+                            name="title"
                             placeholder="Title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}

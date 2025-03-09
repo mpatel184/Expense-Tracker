@@ -187,7 +187,6 @@ export default function HomePage() {
                                             justifyContent: 'center',
                                             alignItems: 'center'
                                         }} onClick={() => setEditingTransaction(t)}>
-                                            ✏️
                                         </button>
                                         <button style={{ 
                                             backgroundColor: '#FFC0CB', 
@@ -259,6 +258,7 @@ export default function HomePage() {
                         {editingTransaction.type === "Expense" && (
                             <input
                                 type="text"
+                                name="title"
                                 placeholder="Title"
                                 defaultValue={editingTransaction.title || ''}
                                 onChange={(e) => setEditingTransaction({ ...editingTransaction, title: e.target.value })}
