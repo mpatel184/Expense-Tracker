@@ -1,21 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell } from 'recharts';
 import AddIncome from "../Addincome";
 import AddExpense from "../AddExpense";
-import './HomePage.css'
+import './HomePage.css';
 
 export default function HomePage() {
-    const [expense, setExpense] = useState(0);
-    const [balance, setBalance] = useState(5000);
-    const [transactions, setTransactions] = useState([]);
+    const [expense, setExpense] = useState(() => {
+        const savedExpense = localStorage.getItem('expense');
+        return savedExpense ? parseFloat(savedExpense) : 0;
+    });
+    const [balance, setBalance] = useState(() => {
+        const savedBalance = localStorage.getItem('balance');
+        return savedBalance ? parseFloat(savedBalance) : 5000;
+    });
+    const [transactions, setTransactions] = useState(() => {
+        const savedTransactions = localStorage.getItem('transactions');
+        return savedTransactions ? JSON.parse(savedTransactions) : [];
+    });
     const [showAddIncome, setShowAddIncome] = useState(false);
     const [showAddExpense, setShowAddExpense] = useState(false);
     const [editingTransaction, setEditingTransaction] = useState(null);
 
     const COLORS = ['#9C27B0', '#FF9800', '#FFEB3B'];
 
+    useEffect(() => {
+        localStorage.setItem('balance', balance);
+        localStorage.setItem('expense', expense);
+    }, [balance, expense]);
+
+    useEffect(() => {
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+    }, [transactions]);
+
     const handleAddIncome = (amount) => {
-        setBalance(prevBalance => prevBalance + amount);
+        const newBalance = balance + amount;
+        setBalance(newBalance);
         setTransactions(prevTransactions => [...prevTransactions, { id: Date.now(), type: "Income", amount }]);
         setShowAddIncome(false);
     };
@@ -25,8 +44,10 @@ export default function HomePage() {
             alert("Insufficient balance!");
             return;
         }
-        setBalance(prevBalance => prevBalance - amount);
-        setExpense(prevExpense => prevExpense + amount);
+        const newBalance = balance - amount;
+        const newExpense = expense + amount;
+        setBalance(newBalance);
+        setExpense(newExpense);
         setTransactions(prevTransactions => [
             ...prevTransactions, 
             { 
@@ -86,7 +107,6 @@ export default function HomePage() {
         { name: 'Entertainment', value: transactions.filter(t => t.category === "Entertainment").reduce((sum, t) => sum + t.amount, 0) },
         { name: 'Travel', value: transactions.filter(t => t.category === "Travel").reduce((sum, t) => sum + t.amount, 0) }
     ].filter(item => item.value > 0);
-
 
     const formatDate = (dateString) => {
         if (!dateString) return '';
