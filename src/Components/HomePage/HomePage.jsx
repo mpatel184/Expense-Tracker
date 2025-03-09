@@ -20,14 +20,24 @@ export default function HomePage() {
         setShowAddIncome(false);
     };
 
-    const handleAddExpense = (amount, category) => {
+    const handleAddExpense = (amount, category, title = '', date = '') => {
         if (amount > balance) {
             alert("Insufficient balance!");
             return;
         }
         setBalance(prevBalance => prevBalance - amount);
         setExpense(prevExpense => prevExpense + amount);
-        setTransactions(prevTransactions => [...prevTransactions, { id: Date.now(), type: "Expense", amount, category }]);
+        setTransactions(prevTransactions => [
+            ...prevTransactions, 
+            { 
+                id: Date.now(), 
+                type: "Expense", 
+                amount, 
+                category, 
+                title: title || category, 
+                date: date || new Date().toISOString().split('T')[0]
+            }
+        ]);
         setShowAddExpense(false);
     };
 
@@ -42,7 +52,7 @@ export default function HomePage() {
         setTransactions(prevTransactions => prevTransactions.filter(t => t.id !== id));
     };
 
-    const handleEditTransaction = (id, newAmount, newCategory) => {
+    const handleEditTransaction = (id, newAmount, newCategory, newTitle, newDate) => {
         const transaction = transactions.find(t => t.id === id);
         const difference = newAmount - transaction.amount;
 
@@ -59,7 +69,13 @@ export default function HomePage() {
 
         setTransactions(prevTransactions =>
             prevTransactions.map(t =>
-                t.id === id ? { ...t, amount: newAmount, category: newCategory } : t
+                t.id === id ? { 
+                    ...t, 
+                    amount: newAmount, 
+                    category: newCategory,
+                    title: newTitle || newCategory,
+                    date: newDate || t.date
+                } : t
             )
         );
         setEditingTransaction(null);
@@ -72,8 +88,9 @@ export default function HomePage() {
     ].filter(item => item.value > 0);
 
 
-    const formatDate = (timestamp) => {
-        const date = new Date(timestamp);
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     };
 
@@ -84,7 +101,7 @@ export default function HomePage() {
             <div className="container-block">
                 <div className="wallet-balance">
                     <h3 style={{ color: 'white' }}>Wallet Balance: <span style={{ color: '#90EE90' }}>₹{balance}</span></h3>
-                    <button className="add-income-btn" onClick={() => setShowAddIncome(true)}>+ Add Balance</button>
+                    <button className="add-income-btn" onClick={() => setShowAddIncome(true)}>+ Add Income</button>
                 </div>
 
                 <div className="expense-block">
@@ -151,8 +168,8 @@ export default function HomePage() {
                                             {t.type === 'Income' ? '$' : '¥'}
                                         </div>
                                         <div>
-                                            <div>{t.type === 'Income' ? 'Income' : t.category}</div>
-                                            <div style={{ fontSize: '0.8rem', color: '#777' }}>{formatDate(t.id)}</div>
+                                            <div>{t.type === 'Income' ? 'Income' : (t.title || t.category)}</div>
+                                            <div style={{ fontSize: '0.8rem', color: '#777' }}>{t.date ? formatDate(t.date) : formatDate(t.id)}</div>
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -239,22 +256,43 @@ export default function HomePage() {
                 <div className="modal">
                     <div className="modal-content">
                         <h2>Edit Transaction</h2>
+                        {editingTransaction.type === "Expense" && (
+                            <input
+                                type="text"
+                                placeholder="Title"
+                                defaultValue={editingTransaction.title || ''}
+                                onChange={(e) => setEditingTransaction({ ...editingTransaction, title: e.target.value })}
+                            />
+                        )}
                         <input
                             type="number"
                             defaultValue={editingTransaction.amount}
                             onChange={(e) => setEditingTransaction({ ...editingTransaction, amount: parseFloat(e.target.value) })}
                         />
                         {editingTransaction.type === "Expense" && (
-                            <select
-                                defaultValue={editingTransaction.category}
-                                onChange={(e) => setEditingTransaction({ ...editingTransaction, category: e.target.value })}
-                            >
-                                <option value="Food">Food</option>
-                                <option value="Entertainment">Entertainment</option>
-                                <option value="Travel">Travel</option>
-                            </select>
+                            <>
+                                <select
+                                    defaultValue={editingTransaction.category}
+                                    onChange={(e) => setEditingTransaction({ ...editingTransaction, category: e.target.value })}
+                                >
+                                    <option value="Food">Food</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Travel">Travel</option>
+                                </select>
+                                <input
+                                    type="date"
+                                    defaultValue={editingTransaction.date || ''}
+                                    onChange={(e) => setEditingTransaction({ ...editingTransaction, date: e.target.value })}
+                                />
+                            </>
                         )}
-                        <button onClick={() => handleEditTransaction(editingTransaction.id, editingTransaction.amount, editingTransaction.category)}>Save</button>
+                        <button onClick={() => handleEditTransaction(
+                            editingTransaction.id, 
+                            editingTransaction.amount, 
+                            editingTransaction.category,
+                            editingTransaction.title,
+                            editingTransaction.date
+                        )}>Save</button>
                         <button onClick={() => setEditingTransaction(null)}>Cancel</button>
                     </div>
                 </div>
