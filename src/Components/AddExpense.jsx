@@ -88,6 +88,7 @@ const AddExpense = ({ onClose, onAdd }) => {
                         marginBottom: '20px'
                     }}>
                         <select
+                        name="category"
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
                             style={{
