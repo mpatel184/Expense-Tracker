@@ -1,0 +1,248 @@
+.homepage {
+    background-color: #222;
+    color: white;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    width: 100vw;
+}
+
+.container-block {
+    display: flex;
+    gap: 20px;
+    background-color: #555;
+    padding: 30px;
+    border-radius: 10px;
+    flex-wrap: wrap;
+    
+}
+
+.wallet-balance, .expense-block {
+    width: 400px;
+    border-radius: 10px;
+    background: gray;
+    height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.add-income-btn {
+    background-color: #8BC34A;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.add-expense-btn {
+    background-color: #F44336;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.transactions-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.recent-transactions, .top-expenses {
+    margin-top: 20px;
+}
+
+.recent-transactions h2, .top-expenses h2 {
+    margin-bottom: 10px;
+    color: white;
+}
+
+.transactions-list {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    color: black;
+    min-height: 100px;
+}
+
+.expenses-summary {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    color: black;
+    min-height: 100px;
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.transaction-icon {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.income-color {
+    color: #4CAF50;
+}
+
+.expense-color {
+    color: #FF9800;
+}
+
+.edit-btn {
+    background-color: #FFE4B5;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete-btn {
+    background-color: #FFC0CB;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.expense-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.expense-progress {
+    height: 100%;
+    border-radius: 5px;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: white;
+    font-size: 12px;
+}
+
+.legend-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.food {
+    background: #9C27B0;
+}
+
+.entertainment {
+    background: #FF9800;
+}
+
+.travel {
+    background: #FFEB3B;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    color: black;
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+    color: black;
+}
+
+.modal-content input, .modal-content select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.modal-content button {
+    padding: 10px 15px;
+    margin: 10px 5px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-content button:first-of-type {
+    background: #4CAF50;
+    color: white;
+}
+
+.modal-content button:last-of-type {
+    background: #F44336;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .container-block {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .wallet-balance, .expense-block {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .transactions-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+}
